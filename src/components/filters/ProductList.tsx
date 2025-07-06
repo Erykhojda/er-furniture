@@ -9,7 +9,7 @@ export const ProductList: React.FC = () => {
     if (filteredProducts.length < 1) {
         return (
             <div className="text-center py-20">
-                <h4 className="text-xl text-red-600 mb-4">No products match the search criteria</h4>
+                <h4 className="text-xl text-red-600 mb-4">Brak produktów spełniających kryteria wyszukiwania.</h4>
             </div>
         );
     }

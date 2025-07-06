@@ -48,12 +48,21 @@ interface AppContextType {
     updateFilters: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | React.MouseEvent<HTMLButtonElement>) => void;
     clearFilters: () => void;
 
-    // Cart
+    // Cart - ZAKTUALIZOWANE
     cart: CartItem[];
     totalItems: number;
     totalAmount: number;
     shippingFee: number;
-    addToCart: (id: number, color: string, amount: number, product: Product) => void;
+    addToCart: (
+        id: number,
+        selectedColor: string,
+        selectedSize: string,
+        amount: number,
+        product: Product,
+        selectedMaterial?: string,
+        selectedUpholstery?: string,
+        selectedExtendable?: boolean
+    ) => void;
     removeItem: (id: string) => void;
     toggleAmount: (id: string, value: 'inc' | 'dec') => void;
     clearCart: () => void;
@@ -75,10 +84,11 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     const [featured, setFeatured] = useState<Product[]>([]);
     const [productsLoading, setProductsLoading] = useState(true);
     const [productsError, setProductsError] = useState<string | null>(null);
+
+    // ZAKTUALIZOWANE FILTRY - usunięto material i colorDrewna
     const [filters, setFilters] = useState<Filters>({
         searchText: '',
-        designer: 'all',
-        color: 'all',
+        category: 'all',
         minPrice: 0,
         maxPrice: 0,
         price: 0,
@@ -93,7 +103,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         cart: [],
         totalItems: 0,
         totalAmount: 0,
-        shippingFee: 534,
+        shippingFee: 53400, // 534.00 PLN w groszach
     };
 
     const [cartState, cartDispatch] = useReducer(cartReducer, cartInitialState);
@@ -130,19 +140,15 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         loadProducts();
     }, []);
 
-    // Filter products based on current filters
+    // ZAKTUALIZOWANE FILTROWANIE - usunięto material, colorDrewna, colors
     const filteredProducts = products.filter((product) => {
-        const { searchText, designer, color, price, shipping } = filters;
+        const { searchText, category, price, shipping } = filters;
 
         if (searchText && !product.name.toLowerCase().includes(searchText.toLowerCase())) {
             return false;
         }
 
-        if (designer !== 'all' && product.designer !== designer) {
-            return false;
-        }
-
-        if (color !== 'all' && !product.colors.includes(color)) {
+        if (category !== 'all' && product.category !== category) {
             return false;
         }
 
@@ -196,9 +202,30 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         }
     };
 
-    // Cart functions
-    const addToCart = (id: number, color: string, amount: number, product: Product) => {
-        cartDispatch({ type: 'ADD_TO_CART', payload: { id, color, amount, product } });
+    // ZAKTUALIZOWANE FUNKCJE KOSZYKA
+    const addToCart = (
+        id: number,
+        selectedColor: string,
+        selectedSize: string,
+        amount: number,
+        product: Product,
+        selectedMaterial?: string,
+        selectedUpholstery?: string,
+        selectedExtendable?: boolean
+    ) => {
+        cartDispatch({
+            type: 'ADD_TO_CART',
+            payload: {
+                id,
+                selectedColor,
+                selectedSize,
+                selectedMaterial,
+                selectedUpholstery,
+                selectedExtendable,
+                amount,
+                product
+            }
+        });
     };
 
     const removeItem = (id: string) => {
@@ -213,7 +240,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         cartDispatch({ type: 'CLEAR_CART' });
     };
 
-    // Other functions
     const openSidebar = () => setIsSidebarOpen(true);
     const closeSidebar = () => setIsSidebarOpen(false);
 
@@ -230,12 +256,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             value = target.value;
         }
 
-        if (name === 'designer' && target instanceof HTMLButtonElement) {
+        if (name === 'category' && target instanceof HTMLButtonElement) {
             value = target.textContent || '';
-        }
-
-        if (name === 'color' && target instanceof HTMLButtonElement) {
-            value = target.dataset.color || '';
         }
 
         if (name === 'price') {
@@ -252,8 +274,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     const clearFilters = () => {
         setFilters(prev => ({
             searchText: '',
-            designer: 'all',
-            color: 'all',
+            category: 'all',
             price: prev.maxPrice,
             shipping: false,
             minPrice: prev.minPrice,
@@ -262,15 +283,12 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     };
 
     const value: AppContextType = {
-        // Navigation
         currentPage, setCurrentPage,
         isSidebarOpen, openSidebar, closeSidebar,
         selectedProduct, setSelectedProduct,
 
-        // Auth
         user, authLoading, logout,
 
-        // Products
         products,
         filteredProducts: sortedProducts,
         featured,
@@ -278,14 +296,11 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         productsError,
         loadProducts,
 
-        // Views & Sorting
         gridView, setGridView,
         sort, updateSort,
 
-        // Filters
         filters, updateFilters, clearFilters,
 
-        // Cart
         ...cartState,
         addToCart, removeItem, toggleAmount, clearCart,
     };

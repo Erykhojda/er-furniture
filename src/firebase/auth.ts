@@ -1,4 +1,3 @@
-// firebase/auth.ts
 import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
@@ -17,7 +16,6 @@ export interface AuthUser {
     photoURL?: string;
 }
 
-// Konwersja Firebase User na nasz AuthUser
 export const convertFirebaseUser = (user: User): AuthUser => ({
     id: user.uid,
     name: user.displayName || user.email?.split('@')[0] || 'User',
@@ -25,7 +23,6 @@ export const convertFirebaseUser = (user: User): AuthUser => ({
     photoURL: user.photoURL || undefined
 });
 
-// Rejestracja z email/password
 export const registerWithEmailAndPassword = async (
     email: string,
     password: string,
@@ -37,7 +34,6 @@ export const registerWithEmailAndPassword = async (
 
     const authUser = convertFirebaseUser(userCredential.user);
 
-    // Zapisz dodatkowe dane użytkownika w Firestore
     await setDoc(doc(db, 'users', authUser.id), {
         name: authUser.name,
         email: authUser.email,
@@ -48,7 +44,6 @@ export const registerWithEmailAndPassword = async (
     return authUser;
 };
 
-// Logowanie z email/password
 export const loginWithEmailAndPassword = async (
     email: string,
     password: string
@@ -57,16 +52,13 @@ export const loginWithEmailAndPassword = async (
     return convertFirebaseUser(userCredential.user);
 };
 
-// Logowanie z Google
 export const loginWithGoogle = async (): Promise<AuthUser> => {
     const userCredential = await signInWithPopup(auth, googleProvider);
     const authUser = convertFirebaseUser(userCredential.user);
 
-    // Sprawdź czy użytkownik już istnieje w Firestore
     const userDoc = await getDoc(doc(db, 'users', authUser.id));
 
     if (!userDoc.exists()) {
-        // Jeśli nie istnieje, utwórz nowy dokument
         await setDoc(doc(db, 'users', authUser.id), {
             name: authUser.name,
             email: authUser.email,
@@ -78,7 +70,6 @@ export const loginWithGoogle = async (): Promise<AuthUser> => {
     return authUser;
 };
 
-// Wylogowanie
 export const logout = async (): Promise<void> => {
     await signOut(auth);
 };

@@ -17,7 +17,6 @@ export const FirebaseInitializer: React.FC = () => {
             await initializeSampleProducts();
             setSuccess(true);
 
-            // Reload products after initialization
             setTimeout(() => {
                 loadProducts();
             }, 1000);

@@ -20,13 +20,13 @@ export const CartContent: React.FC = () => {
                     onClick={() => setCurrentPage('products')}
                     className="px-4 py-2 bg-red-500 text-white uppercase tracking-wide hover:bg-red-600 transition-colors rounded"
                 >
-                    Add more products
+                    Dodaj więcej produktów
                 </button>
                 <button
                     onClick={clearCart}
                     className="px-4 py-2 bg-black text-white uppercase tracking-wide hover:bg-gray-800 transition-colors rounded"
                 >
-                    Clear cart
+                    Wyczyść koszyk
                 </button>
             </div>
 

@@ -21,7 +21,6 @@ export const CartItem: React.FC<CartItemType> = ({
 
     return (
         <div className="grid grid-cols-[200px_auto_auto] lg:grid-cols-[1fr_1fr_1fr_1fr_auto] gap-4 lg:gap-8 items-center justify-items-center mb-12">
-            {/* Product Info */}
             <div className="grid grid-cols-[75px_125px] lg:grid-cols-[100px_200px] gap-4 items-center text-left">
                 <img
                     src={image}
@@ -41,18 +40,14 @@ export const CartItem: React.FC<CartItemType> = ({
                 </div>
             </div>
 
-            {/* Price (desktop only) */}
             <h5 className="hidden lg:block text-red-500">{formatPrice(price)}</h5>
 
-            {/* Amount */}
             <div className="w-20">
                 <Amount amount={amount} increase={increase} decrease={decrease} />
             </div>
 
-            {/* Total (desktop only) */}
             <h5 className="hidden lg:block text-red-500 font-bold">{formatPrice(price * amount)}</h5>
 
-            {/* Remove Button */}
             <button
                 onClick={() => removeItem(id)}
                 className="w-6 h-6 bg-red-600 text-white rounded flex items-center justify-center hover:bg-red-700 transition-colors"

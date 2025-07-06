@@ -94,7 +94,6 @@ export const Home: React.FC = () => {
                 </div>
 
                 <div className="relative z-10 max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
-                    {/* Tekst z animacją slide-in */}
                     <div className="space-y-8 animate-slideInLeft">
                         <h1 className="text-5xl lg:text-7xl font-light text-gray-800 leading-tight">
                             Twój dom, Twoje zasady. <br />
@@ -106,18 +105,16 @@ export const Home: React.FC = () => {
                             onClick={() => setCurrentPage('products')}
                             className="px-8 py-3 bg-red-500 text-white font-medium uppercase tracking-wide hover:bg-red-600 transition-all duration-300 hover:scale-105 hover:shadow-xl rounded shadow-lg transform hover:-translate-y-1"
                         >
-                            Kup teraz
+                            Zamów teraz
                         </button>
                     </div>
 
-                    {/* Obrazek z animacjami */}
                     <div className="relative animate-slideInRight">
                         <img
                             src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=700&fit=crop&crop=center"
                             alt="Comfortable furniture"
                             className="w-full h-96 lg:h-[550px] object-cover rounded-lg shadow-2xl transform hover:scale-105 transition-transform duration-500 hover:rotate-1"
                         />
-                        {/* Animowane kwadraciki wokół zdjęcia */}
                         <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-red-300 opacity-60 rounded-lg animate-float"></div>
                         <div className="absolute -top-4 -right-4 w-16 h-16 bg-red-200 opacity-40 rounded-lg animate-float-delayed"></div>
                         <div className="absolute top-1/2 -left-6 w-12 h-12 bg-red-400 opacity-50 rounded-lg animate-spin-slow"></div>

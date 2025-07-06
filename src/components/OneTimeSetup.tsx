@@ -10,7 +10,6 @@ export const OneTimeSetup: React.FC = () => {
     const { loadProducts, products } = useApp();
 
     useEffect(() => {
-        // Sprawdź czy skrypt już był uruchomiony
         setIsInitialized(wasSolidWoodFurnitureInitialized());
     }, []);
 
@@ -24,7 +23,6 @@ export const OneTimeSetup: React.FC = () => {
             setSuccess(true);
             setIsInitialized(true);
 
-            // Odśwież produkty
             setTimeout(() => {
                 loadProducts();
             }, 1000);

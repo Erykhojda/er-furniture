@@ -9,15 +9,15 @@ export const CartPage: React.FC = () => {
     if (cart.length < 1) {
         return (
             <main>
-                <PageHero title="koszyk" />
+                <PageHero title="Koszyk" />
                 <div className="flex items-center justify-center py-20">
                     <div className="text-center">
-                        <h2 className="text-3xl mb-8">Twoj koszyk jest Pusty</h2>
+                        <h2 className="text-3xl mb-8">Twój koszyk jest pusty</h2>
                         <button
                             onClick={() => setCurrentPage('products')}
                             className="px-8 py-3 bg-red-500 text-white uppercase tracking-wide hover:bg-red-600 transition-colors rounded"
                         >
-                            Fill it
+                            Wypełnij go
                         </button>
                     </div>
                 </div>
@@ -27,7 +27,7 @@ export const CartPage: React.FC = () => {
 
     return (
         <main>
-            <PageHero title="koszyk" />
+            <PageHero title="Koszyk" />
             <div className="py-16 bg-white">
                 <CartContent />
             </div>

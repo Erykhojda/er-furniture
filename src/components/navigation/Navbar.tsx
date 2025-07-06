@@ -57,11 +57,11 @@ export const Navbar: React.FC = () => {
                         </button>
                     </div>
 
-                    {/* Navigation Icons */}
                     <div className="flex items-center space-x-4">
-                        <NavIcons />
+                        <div className="hidden lg:flex">
+                            <NavIcons />
+                        </div>
 
-                        {/* Mobile Menu Button */}
                         <button
                             onClick={openSidebar}
                             className="lg:hidden p-2 text-red-500 hover:text-red-600 transition-colors"

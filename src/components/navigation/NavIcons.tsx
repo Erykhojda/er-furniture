@@ -63,7 +63,7 @@ export const NavIcons: React.FC = () => {
                     onClick={() => setCurrentPage('login')}
                     className="flex items-center space-x-2 text-gray-700 hover:text-red-500 transition-colors"
                 >
-                    <span className="text-sm">Login</span>
+                    <span className="text-sm">Zaloguj się</span>
                     <User className="w-6 h-6" />
                 </button>
             )}

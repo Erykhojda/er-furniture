@@ -6,7 +6,6 @@ export const LoginPage: React.FC = () => {
     const { user, setCurrentPage } = useApp();
     const [isLogin, setIsLogin] = useState(true);
 
-    // Jeśli użytkownik jest zalogowany, przekieruj
     if (user) {
         setCurrentPage('home');
         return null;

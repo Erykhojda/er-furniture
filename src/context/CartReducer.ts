@@ -3,12 +3,24 @@ import type { CartState, CartAction } from '../types';
 export const cartReducer = (state: CartState, action: CartAction): CartState => {
     switch (action.type) {
         case 'ADD_TO_CART': {
-            const { id, color, amount, product } = action.payload;
-            const tempItem = state.cart.find((item) => item.id === id + color);
+            const {
+                id,
+                selectedColor,
+                selectedSize,
+                selectedMaterial,
+                selectedUpholstery,
+                selectedExtendable,
+                amount,
+                product
+            } = action.payload;
+
+            const uniqueId = `${id}-${selectedColor}-${selectedSize}-${selectedMaterial || 'none'}-${selectedUpholstery || 'none'}-${selectedExtendable || 'none'}`;
+
+            const tempItem = state.cart.find((item) => item.id === uniqueId);
 
             if (tempItem) {
                 const tempCart = state.cart.map((cartItem) => {
-                    if (cartItem.id === id + color) {
+                    if (cartItem.id === uniqueId) {
                         let newAmount = cartItem.amount + amount;
                         if (newAmount > cartItem.max) {
                             newAmount = cartItem.max;
@@ -20,9 +32,13 @@ export const cartReducer = (state: CartState, action: CartAction): CartState => 
                 return { ...state, cart: tempCart };
             } else {
                 const newItem = {
-                    id: id + color,
+                    id: uniqueId,
                     name: product.name,
-                    color,
+                    selectedColor,
+                    selectedSize,
+                    selectedMaterial,
+                    selectedUpholstery,
+                    selectedExtendable,
                     amount,
                     image: product.image,
                     price: product.price,
