@@ -1,4 +1,4 @@
-# Er-Furniture - Platforma E-commerce dla Mebli z Litego Drewna
+# Er-Furniture - Platforma E-commerce do sprzedaży mebli
 
 ![Version](https://img.shields.io/badge/version-1.0.0-red)
 ![React](https://img.shields.io/badge/React-18.3.1-blue)
