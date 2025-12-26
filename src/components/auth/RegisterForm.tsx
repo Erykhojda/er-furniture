@@ -33,13 +33,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
         setError('');
 
         if (formData.password !== formData.confirmPassword) {
-            setError('Passwords do not match');
+            setError('Hasła nie są identyczne');
             setLoading(false);
             return;
         }
 
         if (formData.password.length < 6) {
-            setError('Password must be at least 6 characters');
+            setError('Hasło musi mieć co najmniej 6 znaków');
             setLoading(false);
             return;
         }
@@ -49,9 +49,19 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
             setCurrentPage('home');
         } catch (error: unknown) {
             if (error instanceof Error) {
-                setError(error.message || 'Registration failed');
+                // Tłumaczenie błędów Firebase
+                const errorMessage = error.message;
+                if (errorMessage.includes('email-already-in-use')) {
+                    setError('Ten adres email jest już używany');
+                } else if (errorMessage.includes('invalid-email')) {
+                    setError('Nieprawidłowy adres email');
+                } else if (errorMessage.includes('weak-password')) {
+                    setError('Hasło jest zbyt słabe');
+                } else {
+                    setError('Rejestracja nie powiodła się. Spróbuj ponownie.');
+                }
             } else {
-                setError('Registration failed');
+                setError('Rejestracja nie powiodła się');
             }
         } finally {
             setLoading(false);
@@ -67,9 +77,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
             setCurrentPage('home');
         } catch (error: unknown) {
             if (error instanceof Error) {
-                setError(error.message || 'Google login failed');
+                setError('Logowanie przez Google nie powiodło się');
             } else {
-                setError('Google login failed');
+                setError('Logowanie przez Google nie powiodło się');
             }
         } finally {
             setLoading(false);
@@ -78,7 +88,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
 
     return (
         <div className="w-full max-w-md">
-            <h2 className="text-3xl font-light text-gray-800 mb-8 text-center">Sign Up</h2>
+            <h2 className="text-3xl font-light text-gray-800 mb-8 text-center">Zarejestruj się</h2>
 
             {error && (
                 <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded">
@@ -89,7 +99,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                        Full Name
+                        Imię i nazwisko
                     </label>
                     <input
                         type="text"
@@ -99,7 +109,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
                         value={formData.name}
                         onChange={handleChange}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-                        placeholder="Enter your full name"
+                        placeholder="Wpisz swoje imię i nazwisko"
                     />
                 </div>
 
@@ -115,13 +125,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
                         value={formData.email}
                         onChange={handleChange}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-                        placeholder="Enter your email"
+                        placeholder="Wpisz swój email"
                     />
                 </div>
 
                 <div>
                     <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                        Password
+                        Hasło
                     </label>
                     <div className="relative">
                         <input
@@ -132,12 +142,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
                             value={formData.password}
                             onChange={handleChange}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-                            placeholder="Enter your password"
+                            placeholder="Wpisz swoje hasło"
                         />
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-2 text-gray-500"
+                            className="absolute right-3 top-2 text-gray-500 hover:text-gray-700"
+                            aria-label={showPassword ? 'Ukryj hasło' : 'Pokaż hasło'}
                         >
                             {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                         </button>
@@ -146,7 +157,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
 
                 <div>
                     <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-                        Confirm Password
+                        Potwierdź hasło
                     </label>
                     <input
                         type={showPassword ? 'text' : 'password'}
@@ -156,16 +167,16 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
                         value={formData.confirmPassword}
                         onChange={handleChange}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-                        placeholder="Confirm your password"
+                        placeholder="Potwierdź swoje hasło"
                     />
                 </div>
 
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors disabled:opacity-50"
+                    className="w-full bg-red-500 text-white py-3 px-4 rounded-md hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                 >
-                    {loading ? 'Creating Account...' : 'Sign Up'}
+                    {loading ? 'Tworzenie konta...' : 'Zarejestruj się'}
                 </button>
             </form>
 
@@ -175,14 +186,14 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
                         <div className="w-full border-t border-gray-300" />
                     </div>
                     <div className="relative flex justify-center text-sm">
-                        <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                        <span className="px-2 bg-white text-gray-500">Lub kontynuuj z</span>
                     </div>
                 </div>
 
                 <button
                     onClick={handleGoogleLogin}
                     disabled={loading}
-                    className="w-full mt-4 bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-50 transition-colors disabled:opacity-50 flex items-center justify-center space-x-2"
+                    className="w-full mt-4 bg-white border border-gray-300 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 font-medium"
                 >
                     <svg className="w-5 h-5" viewBox="0 0 24 24">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -190,17 +201,17 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
                         <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                         <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                     </svg>
-                    <span>Continue with Google</span>
+                    <span>Kontynuuj przez Google</span>
                 </button>
             </div>
 
             <p className="mt-8 text-center text-sm text-gray-600">
-                Already have an account?{' '}
+                Masz już konto?{' '}
                 <button
                     onClick={onSwitchToLogin}
                     className="font-medium text-red-600 hover:text-red-500"
                 >
-                    Sign in
+                    Zaloguj się
                 </button>
             </p>
         </div>
