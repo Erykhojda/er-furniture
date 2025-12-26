@@ -11,6 +11,7 @@ export const ContactPage: React.FC = () => {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitSuccess, setSubmitSuccess] = useState(false);
+    const [submitError, setSubmitError] = useState('');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFormData(prev => ({
@@ -22,16 +23,40 @@ export const ContactPage: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setSubmitError('');
+        setSubmitSuccess(false);
 
-        // Symulacja wysyłania formularza
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        console.log('🔵 Wysyłanie formularza...', formData);
 
-        setSubmitSuccess(true);
-        setIsSubmitting(false);
-        setFormData({ name: '', email: '', subject: '', message: '' });
+        try {
+            const response = await fetch('http://localhost:3001/api/send-contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
 
-        // Ukryj komunikat sukcesu po 5 sekundach
-        setTimeout(() => setSubmitSuccess(false), 5000);
+            console.log('🔵 Response status:', response.status);
+
+            const data = await response.json();
+            console.log('🔵 Response data:', data);
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to send email');
+            }
+
+            setSubmitSuccess(true);
+            setFormData({ name: '', email: '', subject: '', message: '' });
+
+            setTimeout(() => setSubmitSuccess(false), 5000);
+        } catch (error: unknown) {
+            console.error('❌ Contact form error:', error);
+            const errorMessage = error instanceof Error ? error.message : 'Wystąpił błąd. Spróbuj ponownie.';
+            setSubmitError(errorMessage);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -90,8 +115,8 @@ export const ContactPage: React.FC = () => {
                                         <div>
                                             <h4 className="font-semibold text-gray-800 mb-1">Email</h4>
                                             <p className="text-gray-600">
-                                                <a href="mailto:kontakt@er-furniture.pl" className="hover:text-red-600 transition-colors">
-                                                    kontakt@er-furniture.pl
+                                                <a href="mailto:erfurniturekontakt@gmail.com" className="hover:text-red-600 transition-colors">
+                                                    erfurniturekontakt@gmail.com
                                                 </a>
                                             </p>
                                         </div>
@@ -131,6 +156,14 @@ export const ContactPage: React.FC = () => {
                                 <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                                     <p className="text-green-800">
                                         ✅ Dziękujemy za wiadomość! Odpowiemy w ciągu 24 godzin.
+                                    </p>
+                                </div>
+                            )}
+
+                            {submitError && (
+                                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                                    <p className="text-red-800">
+                                        ❌ {submitError}
                                     </p>
                                 </div>
                             )}

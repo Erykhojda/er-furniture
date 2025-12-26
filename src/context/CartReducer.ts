@@ -7,14 +7,18 @@ export const cartReducer = (state: CartState, action: CartAction): CartState => 
                 id,
                 selectedColor,
                 selectedSize,
+                amount,
+                product,
                 selectedMaterial,
                 selectedUpholstery,
-                selectedExtendable,
-                amount,
-                product
+                selectedExtendable
             } = action.payload;
 
-            const uniqueId = `${id}-${selectedColor}-${selectedSize}-${selectedMaterial || 'none'}-${selectedUpholstery || 'none'}-${selectedExtendable || 'none'}`;
+            // ✅ NAPRAW: upewnij się że id jest liczbą
+            const productId = typeof id === 'number' ? id : product.id;
+
+            // Unikalny ID z poprawnym numerem produktu
+            const uniqueId = `${productId}-${selectedColor}-${selectedSize}${selectedMaterial ? `-${selectedMaterial}` : ''}`;
 
             const tempItem = state.cart.find((item) => item.id === uniqueId);
 
@@ -33,6 +37,7 @@ export const cartReducer = (state: CartState, action: CartAction): CartState => 
             } else {
                 const newItem = {
                     id: uniqueId,
+                    productId: productId,
                     name: product.name,
                     selectedColor,
                     selectedSize,
@@ -48,27 +53,23 @@ export const cartReducer = (state: CartState, action: CartAction): CartState => 
             }
         }
 
-        case 'REMOVE_CART_ITEM':
-            return {
-                ...state,
-                cart: state.cart.filter((item) => item.id !== action.payload)
-            };
-
-        case 'CLEAR_CART':
-            return { ...state, cart: [] };
+        case 'REMOVE_CART_ITEM': {
+            const tempCart = state.cart.filter((item) => item.id !== action.payload);
+            return { ...state, cart: tempCart };
+        }
 
         case 'TOGGLE_CART_ITEM_AMOUNT': {
             const { id, value } = action.payload;
-            const temporaryCart = state.cart.map((item) => {
+            const tempCart = state.cart.map((item) => {
                 if (item.id === id) {
-                    if (value === "inc") {
+                    if (value === 'inc') {
                         let newAmount = item.amount + 1;
                         if (newAmount > item.max) {
                             newAmount = item.max;
                         }
                         return { ...item, amount: newAmount };
                     }
-                    if (value === "dec") {
+                    if (value === 'dec') {
                         let newAmount = item.amount - 1;
                         if (newAmount < 1) {
                             newAmount = 1;
@@ -78,7 +79,11 @@ export const cartReducer = (state: CartState, action: CartAction): CartState => 
                 }
                 return item;
             });
-            return { ...state, cart: temporaryCart };
+            return { ...state, cart: tempCart };
+        }
+
+        case 'CLEAR_CART': {
+            return { ...state, cart: [] };
         }
 
         case 'COUNT_CART_TOTALS': {

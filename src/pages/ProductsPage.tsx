@@ -4,7 +4,12 @@ import { PageHero, Loading } from '../components/ui';
 import { Filters, Sort, ProductList } from '../components/filters';
 
 export const ProductsPage: React.FC = () => {
-    const { productsLoading, productsError, loadProducts } = useApp();
+    const {
+        productsLoading,
+        productsError,
+        loadProducts,
+        filters
+    } = useApp();
 
     if (productsLoading) {
         return (
@@ -64,7 +69,8 @@ export const ProductsPage: React.FC = () => {
                         <Filters />
                         <div>
                             <Sort />
-                            <ProductList />
+                            {/* ✅ UŻYJ key z category zamiast length */}
+                            <ProductList key={filters.category} />
                         </div>
                     </div>
                 </div>

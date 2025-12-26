@@ -13,7 +13,7 @@ export const ProductImages: React.FC<ProductImagesProps> = ({ images, name }) =>
             <img
                 src={main}
                 alt={name}
-                className="w-full h-96 lg:h-[600px] object-cover rounded-lg"
+                className="w-full object-cover rounded-lg"
             />
 
             {images.length > 1 && (

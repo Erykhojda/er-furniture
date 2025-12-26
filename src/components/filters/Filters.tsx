@@ -8,7 +8,6 @@ export const Filters: React.FC = () => {
 
     const categories = getUniqueCategories(products);
 
-    // Funkcja do tłumaczenia kategorii
     const translateCategory = (cat: string): string => {
         const categoryMap: Record<string, string> = {
             'all': 'wszystkie',
@@ -19,13 +18,24 @@ export const Filters: React.FC = () => {
             'komody': 'komody',
             'szafy': 'szafy',
         };
+        return categoryMap[cat.toLowerCase()] || cat;
+    };
 
-        return categoryMap[cat] || cat;
+    const handleCategoryClick = (cat: string) => {
+        const fakeEvent = {
+            target: {
+                name: 'category',
+                value: cat
+            }
+        } as React.ChangeEvent<HTMLInputElement>;
+
+        updateFilters(fakeEvent);
     };
 
     return (
         <div className="bg-white p-6 rounded-lg shadow-sm">
             <div className="space-y-6">
+                {/* Search */}
                 <div>
                     <input
                         type="text"
@@ -37,16 +47,18 @@ export const Filters: React.FC = () => {
                     />
                 </div>
 
+                {/* Categories */}
                 <div>
                     <h5 className="font-medium mb-2">Kategoria</h5>
                     <div className="space-y-1">
-                        {categories.map((cat, index) => (
+                        {categories.map((cat) => (
                             <button
-                                key={index}
-                                onClick={updateFilters}
-                                name="category"
+                                key={cat}
+                                onClick={() => handleCategoryClick(cat)}
                                 type="button"
-                                className={`block w-full text-left py-1 border-b border-transparent hover:border-gray-300 transition-colors capitalize ${category === cat ? 'border-gray-500 font-medium' : ''
+                                className={`block w-full text-left py-1 px-2 border-b border-transparent hover:border-red-300 transition-colors capitalize ${category === cat
+                                    ? 'border-red-500 font-semibold text-red-600'
+                                    : 'text-gray-700'
                                     }`}
                             >
                                 {translateCategory(cat)}
@@ -55,9 +67,10 @@ export const Filters: React.FC = () => {
                     </div>
                 </div>
 
+                {/* Price */}
                 <div>
                     <h5 className="font-medium mb-2">Cena</h5>
-                    <p className="text-sm mb-2">{formatPrice(price)}</p>
+                    <p className="text-sm mb-2 text-red-600 font-medium">{formatPrice(price)}</p>
                     <input
                         type="range"
                         name="price"
@@ -66,7 +79,7 @@ export const Filters: React.FC = () => {
                         max={filters.maxPrice}
                         value={price}
                         step={1000}
-                        className="w-full"
+                        className="w-full accent-red-600"
                     />
                     <div className="flex justify-between text-xs text-gray-500 mt-1">
                         <span>{formatPrice(filters.minPrice)}</span>
@@ -74,23 +87,13 @@ export const Filters: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
-                    <input
-                        type="checkbox"
-                        name="shipping"
-                        id="shipping"
-                        onChange={updateFilters}
-                        checked={filters.shipping}
-                        className="rounded"
-                    />
-                    <label htmlFor="shipping" className="text-sm">Darmowa wysyłka</label>
-                </div>
+                {/* ❌ USUNIĘTO SEKCJĘ SHIPPING */}
             </div>
 
             <button
                 type="button"
                 onClick={clearFilters}
-                className="mt-6 w-full px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors"
+                className="mt-6 w-full px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors font-medium"
             >
                 Wyczyść filtry
             </button>

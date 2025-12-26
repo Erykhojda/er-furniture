@@ -5,11 +5,12 @@ import { formatPrice } from '../../utils';
 import { Amount } from '../ui/Amount';
 import type { CartItem as CartItemType } from '../../types';
 
-
 export const CartItem: React.FC<CartItemType> = ({
     id,
     name,
-    color,
+    selectedColor,
+    selectedSize,
+    selectedMaterial,
     amount,
     image,
     price,
@@ -29,14 +30,31 @@ export const CartItem: React.FC<CartItemType> = ({
                 />
                 <div>
                     <h5 className="text-sm mb-1">{name}</h5>
+
+                    {/* Kolor */}
                     <p className="text-xs text-gray-500 flex items-center">
-                        Color:
+                        Kolor:
                         <span
-                            style={{ backgroundColor: color }}
-                            className="inline-block w-3 h-3 rounded-full ml-2"
+                            style={{ backgroundColor: selectedColor }}
+                            className="inline-block w-3 h-3 rounded-full ml-2 border border-gray-300"
                         ></span>
                     </p>
-                    <h5 className="text-sm text-red-500 lg:hidden">{formatPrice(price)}</h5>
+
+                    {/* Rozmiar */}
+                    {selectedSize && (
+                        <p className="text-xs text-gray-500">
+                            Rozmiar: <span className="font-medium">{selectedSize}</span>
+                        </p>
+                    )}
+
+                    {/* Materiał */}
+                    {selectedMaterial && (
+                        <p className="text-xs text-gray-500">
+                            Materiał: <span className="font-medium">{selectedMaterial}</span>
+                        </p>
+                    )}
+
+                    <h5 className="text-sm text-red-500 lg:hidden mt-1">{formatPrice(price)}</h5>
                 </div>
             </div>
 
@@ -51,6 +69,7 @@ export const CartItem: React.FC<CartItemType> = ({
             <button
                 onClick={() => removeItem(id)}
                 className="w-6 h-6 bg-red-600 text-white rounded flex items-center justify-center hover:bg-red-700 transition-colors"
+                aria-label="Usuń produkt"
             >
                 <X className="w-4 h-4" />
             </button>
