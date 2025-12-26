@@ -144,6 +144,30 @@ export const deleteProduct = async (id: string): Promise<void> => {
     await deleteDoc(docRef);
 };
 
+// Napraw wszystkie produkty - nadaj im ID
+export const fixProductIds = async (): Promise<void> => {
+    const querySnapshot = await getDocs(collection(db, COLLECTION_NAME));
+
+    let counter = 1;
+
+    for (const document of querySnapshot.docs) {
+        const data = document.data();
+
+        // Jeśli nie ma ID lub jest NaN
+        if (!data.id || isNaN(data.id)) {
+            await updateDoc(doc(db, COLLECTION_NAME, document.id), {
+                id: counter
+            });
+            console.log(`✅ Fixed product: ${data.name} → ID: ${counter}`);
+            counter++;
+        } else {
+            counter = Math.max(counter, data.id + 1);
+        }
+    }
+
+    console.log('✅ All products fixed!');
+};
+
 // Inicjalizuj dane przykładowe (wywołaj raz)
 export const initializeSampleProducts = async (): Promise<void> => {
     const sampleProducts = [

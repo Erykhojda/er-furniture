@@ -40,6 +40,7 @@ export interface Product {
 
 export interface CartItem {
     id: string;
+    productId: number;
     name: string;
     selectedColor: string;
     selectedSize: string;
@@ -83,7 +84,6 @@ export interface Filters {
     minPrice: number;
     maxPrice: number;
     price: number;
-    shipping: boolean;
 }
 
 export interface CartState {
@@ -111,7 +111,7 @@ export type CartAction =
     | { type: 'CLEAR_CART' }
     | { type: 'COUNT_CART_TOTALS' };
 
-export type PageType = 'home' | 'about' | 'products' | 'single-product' | 'cart' | 'login' | 'checkout' | 'contact' | 'error';
+export type PageType = 'home' | 'about' | 'products' | 'contact' | 'single-product' | 'cart' | 'login' | 'checkout' | 'success' | 'error';
 
 // Dostępne kolory do wyboru przy zamawianiu
 export const AVAILABLE_COLORS = [

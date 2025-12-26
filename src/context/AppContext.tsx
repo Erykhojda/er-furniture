@@ -45,10 +45,10 @@ interface AppContextType {
 
     // Filters
     filters: Filters;
-    updateFilters: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | React.MouseEvent<HTMLButtonElement>) => void;
+    updateFilters: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
     clearFilters: () => void;
 
-    // Cart - ZAKTUALIZOWANE
+    // Cart
     cart: CartItem[];
     totalItems: number;
     totalAmount: number;
@@ -85,14 +85,13 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     const [productsLoading, setProductsLoading] = useState(true);
     const [productsError, setProductsError] = useState<string | null>(null);
 
-    // ZAKTUALIZOWANE FILTRY - usunięto material i colorDrewna
+    // Filters state
     const [filters, setFilters] = useState<Filters>({
         searchText: '',
         category: 'all',
         minPrice: 0,
         maxPrice: 0,
         price: 0,
-        shipping: false,
     });
 
     // Firebase Auth
@@ -140,28 +139,31 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         loadProducts();
     }, []);
 
-    // ZAKTUALIZOWANE FILTROWANIE - usunięto material, colorDrewna, colors
+    // Filter products
     const filteredProducts = products.filter((product) => {
-        const { searchText, category, price, shipping } = filters;
+        const { searchText, category, price } = filters;
 
+        // Search
         if (searchText && !product.name.toLowerCase().includes(searchText.toLowerCase())) {
             return false;
         }
 
-        if (category !== 'all' && product.category !== category) {
+        // Category
+        if (category !== 'all' && product.category.toLowerCase() !== category.toLowerCase()) {
             return false;
         }
 
+        // Price
         if (price > 0 && product.price > price) {
-            return false;
-        }
-
-        if (shipping && !product.shipping) {
             return false;
         }
 
         return true;
     });
+
+    console.log('📊 Filters:', filters);
+    console.log('📦 Total products:', products.length);
+    console.log('✅ Filtered products:', filteredProducts.length);
 
     // Sort products
     const sortedProducts = [...filteredProducts].sort((a, b) => {
@@ -202,7 +204,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         }
     };
 
-    // ZAKTUALIZOWANE FUNKCJE KOSZYKA
+    // Cart functions
     const addToCart = (
         id: number,
         selectedColor: string,
@@ -240,6 +242,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         cartDispatch({ type: 'CLEAR_CART' });
     };
 
+    // UI functions
     const openSidebar = () => setIsSidebarOpen(true);
     const closeSidebar = () => setIsSidebarOpen(false);
 
@@ -247,26 +250,16 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setSort(e.target.value);
     };
 
-    const updateFilters = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | React.MouseEvent<HTMLButtonElement>) => {
-        const target = e.target as HTMLInputElement | HTMLSelectElement | HTMLButtonElement;
-        const name = target.getAttribute('name') || '';
-        let value: string | number | boolean = '';
+    const updateFilters = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const name = e.target.name;
+        let value: string | number | boolean = e.target.value;
 
-        if (target instanceof HTMLInputElement || target instanceof HTMLSelectElement) {
-            value = target.value;
-        }
-
-        if (name === 'category' && target instanceof HTMLButtonElement) {
-            value = target.textContent || '';
-        }
-
+        // Price jako liczba
         if (name === 'price') {
             value = Number(value);
         }
 
-        if (name === 'shipping' && target instanceof HTMLInputElement) {
-            value = target.checked;
-        }
+        console.log('🔍 Filter update:', name, '=', value);
 
         setFilters(prev => ({ ...prev, [name]: value }));
     };
@@ -276,18 +269,23 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             searchText: '',
             category: 'all',
             price: prev.maxPrice,
-            shipping: false,
             minPrice: prev.minPrice,
             maxPrice: prev.maxPrice,
         }));
     };
 
     const value: AppContextType = {
-        currentPage, setCurrentPage,
-        isSidebarOpen, openSidebar, closeSidebar,
-        selectedProduct, setSelectedProduct,
+        currentPage,
+        setCurrentPage,
+        isSidebarOpen,
+        openSidebar,
+        closeSidebar,
+        selectedProduct,
+        setSelectedProduct,
 
-        user, authLoading, logout,
+        user,
+        authLoading,
+        logout,
 
         products,
         filteredProducts: sortedProducts,
@@ -296,13 +294,20 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         productsError,
         loadProducts,
 
-        gridView, setGridView,
-        sort, updateSort,
+        gridView,
+        setGridView,
+        sort,
+        updateSort,
 
-        filters, updateFilters, clearFilters,
+        filters,
+        updateFilters,
+        clearFilters,
 
         ...cartState,
-        addToCart, removeItem, toggleAmount, clearCart,
+        addToCart,
+        removeItem,
+        toggleAmount,
+        clearCart,
     };
 
     return (

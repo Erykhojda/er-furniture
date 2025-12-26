@@ -4,6 +4,7 @@ import { useApp } from './context/useApp';
 import { Navbar, Sidebar } from './components/navigation';
 import { Footer } from './components/Footer';
 import { OneTimeSetup } from './components/OneTimeSetup';
+import { SuccessPage } from './pages/SuccessPage';
 import {
   HomePage,
   AboutPage,
@@ -37,6 +38,8 @@ const AppContent: React.FC = () => {
         return <CheckoutPage />;
       case 'contact':
         return <ContactPage />;
+      case 'success':
+        return <SuccessPage />;
       default:
         return <ErrorPage />;
     }

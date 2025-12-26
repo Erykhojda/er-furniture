@@ -10,6 +10,8 @@ interface ListViewProps {
 export const ListView: React.FC<ListViewProps> = ({ products }) => {
     const { setCurrentPage, setSelectedProduct } = useApp();
 
+    console.log('🔄 ListView render - products:', products.length);
+
     return (
         <div className="space-y-8">
             {products.map((product) => (
