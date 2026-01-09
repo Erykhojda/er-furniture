@@ -3,7 +3,7 @@ import {
     collection,
     addDoc,
     serverTimestamp,
-    Timestamp
+    getDocs
 } from 'firebase/firestore';
 import { db } from './config';
 import type { CartItem, Order, OrderItem } from '../types';

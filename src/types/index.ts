@@ -4,6 +4,7 @@ export interface Product {
     price: number; // Cena w groszach (np. 648800 = 6488.00 PLN)
     image: string;
     images: string[];
+    colors?: string[]
 
     // Materiał (usunięto colorDrewna)
     material?: string;
